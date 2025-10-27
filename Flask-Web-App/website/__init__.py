@@ -12,7 +12,11 @@ def create_app():
     app = Flask(__name__)
     # Use environment variables in production; fall back to local defaults for development
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'hjshjhdjah kjshkjdhjs')
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', f'sqlite:///{DB_NAME}')
+    database_url = os.environ.get('DATABASE_URL', f'sqlite:///{DB_NAME}')
+    # Handle Postgres URL format for Vercel deployment
+    if database_url.startswith('postgres://'):
+        database_url = database_url.replace('postgres://', 'postgresql://', 1)
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_url
     # Recommended to disable track modifications for performance
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.init_app(app)
