@@ -31,6 +31,24 @@ This guide explains how to deploy your Flask Notes app to Vercel using serverles
    - Supabase
    - Any PostgreSQL provider
 
+### Vercel Postgres (recommended)
+
+If you choose Vercel Postgres (recommended for best compatibility):
+
+1. In the Vercel dashboard, go to the project and choose "Add" -> "Postgres" (or "Databases" -> "Create Postgres" depending on the UI).
+2. Create a new Postgres database for your project.
+3. Copy the connection string shown in the Vercel dashboard — it will look like:
+
+   ```
+   postgresql://<user>:<password>@<host>:<port>/<database>
+   ```
+
+4. In Project Settings -> Environment Variables, paste that connection into `DATABASE_URL` (select the appropriate environment: Production/Preview/Development).
+
+5. Deploy the project. On first deploy the app will create necessary tables (we run `db.create_all()` during app startup).
+
+Note: If you prefer Supabase/Railway, create the DB there and use the provided `DATABASE_URL` instead.
+
 4. Click "Deploy"
 
 ## Important Notes

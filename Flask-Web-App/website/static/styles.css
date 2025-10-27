@@ -21,6 +21,7 @@ html,body{
 
 /* Navbar tweaks - golden header */
 .navbar{
+  position: relative;
   background: linear-gradient(90deg,var(--primary), var(--primary-700));
   border-bottom: 1px solid rgba(0,0,0,0.06);
 }
@@ -106,6 +107,19 @@ label{ font-weight:600; color:var(--muted) }
 @media (max-width:576px){
   .auth-card{ margin:20px 16px }
   .container{ padding:0 12px }
+}
+
+/* Mobile positioning for theme toggle */
+@media (max-width:576px){
+  .mobile-theme-toggle{
+    position: absolute;
+    right: 12px;
+    top: 8px;
+    z-index: 1050;
+    display: inline-block;
+  }
+  /* Ensure collapsed nav items don't overlap the toggle */
+  .navbar .navbar-nav{ padding-right:48px }
 }
 
 /* Theme toggle button inside navbar */

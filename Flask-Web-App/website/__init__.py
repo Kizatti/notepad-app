@@ -29,8 +29,15 @@ def create_app():
 
     from .models import User, Note
     
+    # Optimize database initialization for serverless environment
     with app.app_context():
-        db.create_all()
+        try:
+            # Check if tables exist by querying the User table
+            User.query.first()
+        except Exception as e:
+            # Tables don't exist, create them
+            db.create_all()
+            print('Created database tables')
 
     login_manager = LoginManager()
     login_manager.login_view = 'auth.login'

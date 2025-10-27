@@ -7,6 +7,12 @@ import json
 views = Blueprint('views', __name__)
 
 
+@views.route('/health', methods=['GET'])
+def health():
+    # Simple health endpoint for Vercel / monitoring
+    return jsonify({'status': 'ok'}), 200
+
+
 @views.route('/', methods=['GET', 'POST'])
 @login_required
 def home():

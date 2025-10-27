@@ -40,12 +40,11 @@
           <a class="nav-item nav-link" id="login" href="/login">Login</a>
           <a class="nav-item nav-link" id="signUp" href="/sign-up">Sign Up</a>
           {% endif %}
-          <!-- Theme toggle -->
-          <a class="nav-item nav-link" href="#" role="button">
-            <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">☀️</button>
-          </a>
         </div>
       </div>
+      <!-- Theme toggles: one visible on mobile, one on desktop (both use the same class) -->
+      <button class="theme-toggle d-lg-none mobile-theme-toggle" aria-label="Toggle theme">☀️</button>
+      <button class="theme-toggle d-none d-lg-inline desktop-theme-toggle" aria-label="Toggle theme">☀️</button>
     </nav>
 
     {% with messages = get_flashed_messages(with_categories=true) %} {% if
@@ -97,19 +96,21 @@
     <script>
       // Theme toggle with persistence in localStorage
       (function () {
-        const btn = document.getElementById('theme-toggle');
+        const buttons = Array.from(document.querySelectorAll('.theme-toggle'));
         const root = document.documentElement;
 
         function setTheme(theme) {
           root.setAttribute('data-theme', theme);
           root.setAttribute('data-theme-source','user');
           localStorage.setItem('theme', theme);
-          updateButton(theme);
+          updateButtons(theme);
         }
 
-        function updateButton(theme) {
-          if (!btn) return;
-          btn.textContent = theme === 'dark' ? '🌙' : '☀️';
+        function updateButtons(theme) {
+          if (!buttons || buttons.length === 0) return;
+          buttons.forEach(function (b) {
+            b.textContent = theme === 'dark' ? '🌙' : '☀️';
+          });
         }
 
         // Determine initial theme: stored preference or system preference
@@ -121,11 +122,13 @@
           setTheme(prefersDark ? 'dark' : 'light');
         }
 
-        if (btn) {
-          btn.addEventListener('click', function (e) {
-            e.preventDefault();
-            const now = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-            setTheme(now);
+        if (buttons && buttons.length) {
+          buttons.forEach(function (b) {
+            b.addEventListener('click', function (e) {
+              e.preventDefault();
+              const now = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+              setTheme(now);
+            });
           });
         }
       })();
