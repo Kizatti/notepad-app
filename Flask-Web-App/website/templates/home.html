@@ -1,0 +1,26 @@
+{% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
+%}
+<div class="notes-wrapper">
+  <h1 class="notes-title">My Notes</h1>
+
+  <div class="notes-list">
+    {% if user.notes|length == 0 %}
+    <div class="empty-notes">No notes yet — add your first note below.</div>
+    {% endif %}
+
+    {% for note in user.notes %}
+    <div class="note-card">
+      <div class="note-body">{{ note.data }}</div>
+      <button type="button" class="note-delete" onClick="deleteNote({{ note.id }})" aria-label="Delete note">&times;</button>
+    </div>
+    {% endfor %}
+  </div>
+
+  <form method="POST" class="note-form">
+    <textarea name="note" id="note" class="form-control note-input" placeholder="Write something..."></textarea>
+    <div class="form-actions" style="margin-top:12px">
+      <button type="submit" class="btn btn-primary">Add Note</button>
+    </div>
+  </form>
+</div>
+{% endblock %}
