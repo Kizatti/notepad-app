@@ -17,15 +17,22 @@ def health():
 @login_required
 def home():
     if request.method == 'POST': 
-        note = request.form.get('note')#Gets the note from the HTML 
+        note = request.form.get('note')  # Gets the note from the HTML
 
-        if len(note) < 1:
-            flash('Note is too short!', category='error') 
+        # Validate input safely (note can be None)
+        if not note or len(note.strip()) < 1:
+            flash('Note is too short!', category='error')
         else:
-            new_note = Note(data=note, user_id=current_user.id)  #providing the schema for the note 
-            db.session.add(new_note) #adding the note to the database 
-            db.session.commit()
-            flash('Note added!', category='success')
+            new_note = Note(data=note.strip(), user_id=getattr(current_user, 'id', None))
+            db.session.add(new_note)
+            try:
+                db.session.commit()
+                flash('Note added!', category='success')
+            except Exception as e:
+                # Rollback on error and log
+                db.session.rollback()
+                print(f"Error saving note: {e}")
+                flash('Error saving note. Please try again.', category='error')
 
     return render_template("home.html", user=current_user)
 
