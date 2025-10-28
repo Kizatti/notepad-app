@@ -9,8 +9,14 @@ views = Blueprint('views', __name__)
 
 @views.route('/health', methods=['GET'])
 def health():
-    # Simple health endpoint for Vercel / monitoring
-    return jsonify({'status': 'ok'}), 200
+    # Health endpoint: verifies app is running and DB connection
+    try:
+        # Try a lightweight DB call
+        db.session.execute('SELECT 1')
+        return jsonify({'status': 'ok', 'database': 'connected'}), 200
+    except Exception as e:
+        # Return error details (stringified) so you can see what failed in the browser
+        return jsonify({'status': 'error', 'database': 'disconnected', 'error': str(e)}), 500
 
 
 @views.route('/', methods=['GET', 'POST'])
