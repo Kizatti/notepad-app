@@ -54,3 +54,25 @@ def delete_note():
             db.session.commit()
 
     return jsonify({})
+
+
+@views.route('/diag', methods=['GET'])
+def diag():
+    """Diagnostic endpoint (safe to share) - returns presence of key env vars and masked DB url."""
+    from os import environ
+
+    def mask(s):
+        if not s:
+            return None
+        s = str(s)
+        if len(s) <= 12:
+            return s[0:3] + '...' + s[-3:]
+        return s[:6] + '...' + s[-6:]
+
+    db_url = environ.get('POSTGRES_URL') or environ.get('DATABASE_URL')
+    return jsonify({
+        'secret_key_set': bool(environ.get('SECRET_KEY')),
+        'db_url_set': bool(db_url),
+        'db_url_masked': mask(db_url),
+        'db_url_scheme': (db_url.split(':')[0] if db_url else None),
+    }), 200
